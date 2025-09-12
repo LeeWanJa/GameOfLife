@@ -1,4 +1,4 @@
-package main.com.jaewan.gameoflife;
+package com.jaewan.gameoflife;
 
 import java.util.ArrayList;
 

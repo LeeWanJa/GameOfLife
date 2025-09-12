@@ -1,6 +1,4 @@
-package main.com.jaewan.gameoflife;
-
-import java.util.ArrayList;
+package com.jaewan.gameoflife;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,6 +9,6 @@ public class Main {
         playingGame.setSimulation();
         
         // 사용자에게 시작 신호 받으면 실행
-        playingGame.startOneSimulation();
+        //playingGame.startOneSimulation();
     }
 }

@@ -1,6 +1,4 @@
-package main.com.jaewan.gameoflife;
-
-import java.util.ArrayList;
+package com.jaewan.gameoflife;
 
 public class Grid {
     private final Cell[][] cells;
