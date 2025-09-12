@@ -19,4 +19,8 @@ public class Cell {
     void addNeighbors(Cell cell){
         neighbours.add(cell);
     }
+
+    boolean getCellStatus(){
+        return status;
+    }
 }

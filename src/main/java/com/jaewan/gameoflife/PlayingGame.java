@@ -12,15 +12,15 @@ public class PlayingGame {
         grid.pairNeighbors();
     }
 
-    boolean[][] startOneSimulation(boolean[][] temp){
-        for(int i = 0; i < temp.length; i++){
-            for(int j = 0; j < temp[i].length; j++){
-                if(temp[i][j]){
+    Grid startOneSimulation(){
+        for(int i = 0; i < grid.getRowSize(); i++){
+            for(int j = 0; j < grid.getColumnSize(); j++){
+                if(grid.getCellStatus(i, j)){
                     System.out.println(i + "열 " + j + "번 인덱스 = true");
                 }
             }
         }
 
-        return temp;
+        return grid;
     }
 }

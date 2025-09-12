@@ -8,16 +8,12 @@ public class GameOflifeTest {
             Arrange(준비) - 모든 세포가 죽어있는 3*3 격자 표현
             아직 격자는 없음
          */
-        boolean[][] grid = {
-                {false, false, false},
-                {false, false, false},
-                {false, false, false}
-        };
+
 
         /*
             Act(실행) - 바로 다음 세대 계산
          */
         PlayingGame playingGame = new PlayingGame(3);
-
+        Grid testGrid = playingGame.startOneSimulation();
     }
 }

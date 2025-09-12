@@ -7,6 +7,18 @@ public class Grid {
         this.cells = new Cell[size][size];
     }
 
+    int getRowSize(){
+        return cells.length;
+    }
+
+    int getColumnSize(){
+        return cells[0].length;
+    }
+
+    boolean getCellStatus(int row, int col){
+        return cells[row][col].getCellStatus();
+    }
+
     void pairNeighbors(){
         for(int i = 0; i < cells.length; i++){
             for(int j = 0; j < cells[i].length; j++){
