@@ -13,7 +13,6 @@ public class GameOflifeTest {
         /*
             Act(실행) - 바로 다음 세대 계산
          */
-        PlayingGame playingGame = new PlayingGame(3);
-        Grid testGrid = playingGame.startOneSimulation();
+
     }
 }
