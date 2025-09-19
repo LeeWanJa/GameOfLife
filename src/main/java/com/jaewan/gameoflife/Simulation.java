@@ -8,46 +8,24 @@ public class Simulation {
         this.grid.initializeGrid();
     }
 
+    public Simulation(Grid grid) {
+        this.grid = grid;
+    }
+
     Grid nextGeneration(){
         int gridSize = this.grid.getGridSize();
-        Grid tmpGrid = new Grid(gridSize);
-        tmpGrid.initializeGrid();
+        Grid nextGrid = new Grid(gridSize); // return할 nextGrid
+        nextGrid.initializeGrid();
 
+        // for문이 3번 중첩됌 -> 시간 복잡도 매우 비효율.. 인접 리스트 활용? 모든 좌표의 값을 살펴봐야 하기 때문에 불가피?
         for(int i = 0; i < gridSize; i++){
             for(int j = 0; j < gridSize; j++){
-                // 현재 셀의 주변 이웃 상태 점검(살아있는 수에 비례하여 count)
-                int statusCount = 0;
-                int[][] neighbors = {
-                        {i - 1, j - 1}, {i - 1, j}, {i - 1, j + 1},
-                        {i, j - 1}, {i, j + 1}, // 자기 자신은 제외
-                        {i + 1, j - 1}, {i + 1, j}, {i + 1, j + 1},
-                };
-
-                for(int[] offset : neighbors){
-                    if((0 <= offset[0] && offset[0] < gridSize) // y축의 범위 검사
-                            && (0 <= offset[1] && offset[1] < gridSize) // x축의 범위 검사
-                                && this.grid.getCellValue(offset[0], offset[1])){ // y, x축의 값이 true라면? -> 살아있는 세포
-                        statusCount++;
-                    }
-                }
-
-                boolean status = this.grid.getCellValue(i, j);
-
-                // 살아있는 세포와 죽어있는 세포로 조건 분리
-                if(status){ // 세포가 살아있는 경우
-                    if(statusCount == 2 || statusCount == 3)
-                        tmpGrid.setGridValue(i, j, true);
-                    else
-                        tmpGrid.setGridValue(i, j, false);
-                } else{
-                    if(statusCount == 3)
-                        tmpGrid.setGridValue(i, j, true);
-                    else
-                        tmpGrid.setGridValue(i, j, false);
-                }
+                int statusCount = grid.countCoordinates(i, j, gridSize);
+                boolean status = grid.nextGenStatus(i, j, statusCount);
+                nextGrid.setGridValue(i, j, status);
             }
         }
 
-        return tmpGrid;
+        return nextGrid;
     }
 }
