@@ -1,4 +1,4 @@
-package com.jaewan.gameoflife;
+package com.jaewan.gameoflife.common;
 
 public class AnsiColors {
     // 색상 리셋

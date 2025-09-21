@@ -1,5 +1,11 @@
-package com.jaewan.gameoflife;
+package com.jaewan.gameoflife.service;
+import com.jaewan.gameoflife.models.Coordinate;
+import com.jaewan.gameoflife.models.Grid;
+import com.jaewan.gameoflife.service.Simulation;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,18 +18,18 @@ public class SimulationTest {
             Expected(기대) - 다음 세대에서도 모두 죽어있는 3*3 격자로 존재해야함
          */
         Simulation simulation = new Simulation(3);
+        Grid initialGrid = simulation.getCurrentGrid();
 
         /*
             Act(실행) - 바로 다음 세대 계산
          */
-        Grid nextGrid = simulation.nextGeneration();
-        printGeneration(nextGrid);
+        Grid nextGrid = initialGrid.nextGeneration();
+        nextGrid.printGrid();
 
         /*
             Assert(검증) - 기대하는 결과도 모든 세포가 죽어있는 격자여야 함
          */
-        Grid expectedGrid = new Grid(nextGrid.getGridSize());
-        expectedGrid.initializeGrid();
+        Grid expectedGrid = new Grid(3);
 
         // 두 Grid 객체가 같은지 비교한다
         for(int i = 0; i < expectedGrid.getGridSize(); i++){
@@ -33,41 +39,31 @@ public class SimulationTest {
         }
     }
 
-    // 디버깅 도구 -> 격자 True, False 출력
-    void printGeneration(Grid grid){
-        int size = grid.getGridSize();
-
-        for(int i = 0; i < size; i++){
-            for(int j = 0; j < size; j++){
-                if(grid.getCellValue(i, j))
-                    System.out.print("T ");
-                else
-                    System.out.print("F ");
-            }
-
-            System.out.println();
-        }
-    }
-
     // [규칙 1] 탄생 : 죽어있는 세포의 살아있는 이웃이 정확히 3개이면, 다음 세대는 살아난다.
     @Test
     void nextGeneraton_shouldAlive_whenDeadCellHasThreeAliveNeighbors(){
         // Arrange
-        Grid initialGrid = new Grid(3);
-        initialGrid.initializeGrid();
-        int[][] initialCoordinates = {{0, 0}, {1, 0}, {0, 1}};
-        initialGrid.setGridValues(initialCoordinates, true);
+        Set<Coordinate> coordinates = new HashSet<Coordinate>();
+        int[][] initialCoordinates = {{1, 1}, {2, 1}, {1, 2}};
+
+        for(int[] offset : initialCoordinates)
+            coordinates.add(new Coordinate(offset[0], offset[1]));
+
+        Simulation simulation = new Simulation(3, coordinates);
+        Grid initialGrid = simulation.getCurrentGrid();
 
         // Act
-        Simulation simulation = new Simulation(initialGrid);
-        Grid nextGrid = simulation.nextGeneration();
-        printGeneration(nextGrid);
+        Grid nextGrid = initialGrid.nextGeneration();
 
         // Assertion
-        Grid expectedGrid = new Grid(3);
-        expectedGrid.initializeGrid();
-        int[][] expectedCoordinates = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
-        expectedGrid.setGridValues(expectedCoordinates, true);
+        coordinates.clear();
+        int[][] expectedCoordinates = {{1, 1}, {2, 1}, {1, 2}, {2, 2}};
+
+        for(int[] offset: expectedCoordinates)
+            coordinates.add(new Coordinate(offset[0], offset[1]));
+
+        Simulation expectedSimulation = new Simulation(3, coordinates);
+        Grid expectedGrid = expectedSimulation.getCurrentGrid();
 
         for(int i = 0; i < expectedGrid.getGridSize(); i++){
             for(int j = 0; j < expectedGrid.getGridSize(); j++){
@@ -80,20 +76,27 @@ public class SimulationTest {
     @Test
     void nextGeneration_shouldLiveCell_whenLiveCellHasTwoOrThreeNeighbors(){
         // Arrange
-        Grid initialGrid = new Grid(3);
-        initialGrid.initializeGrid();
-        int[][] initialCoordinates = {{0, 2}, {1, 0}, {1, 1}};
-        initialGrid.setGridValues(initialCoordinates, true);
+        Set<Coordinate> coordinates = new HashSet<>();
+        int[][] initialCoordinates = {{1, 3}, {2, 1}, {2, 2}};
+
+        for(int[] offset : initialCoordinates)
+            coordinates.add(new Coordinate(offset[0], offset[1]));
+
+        Simulation simulation = new Simulation(3, coordinates);
+        Grid initialGrid = simulation.getCurrentGrid();
 
         // Act
-        Simulation simulation = new Simulation(initialGrid);
-        Grid nextGrid = simulation.nextGeneration();
+        Grid nextGrid = initialGrid.nextGeneration();
 
         // Assertion
-        Grid expectedGrid = new Grid(3);
-        expectedGrid.initializeGrid();
-        int[][] expectedCoordinates = {{1, 1}, {0, 1}};
-        expectedGrid.setGridValues(expectedCoordinates, true);
+        coordinates.clear();
+        int[][] expectedCoordinates = {{2, 2}, {1, 2}};
+
+        for(int[] offset: expectedCoordinates)
+            coordinates.add(new Coordinate(offset[0], offset[1]));
+
+        Simulation expectedSimulation = new Simulation(3, coordinates);
+        Grid expectedGrid = expectedSimulation.getCurrentGrid();
 
         for(int i = 0; i < expectedGrid.getGridSize(); i++){
             for(int j = 0; j < expectedGrid.getGridSize(); j++){
@@ -106,17 +109,16 @@ public class SimulationTest {
     @Test
     void nextGneration_shouldKillCell_whenLiveCellHasZeroNeighbors(){
         // Arrange
-        Grid initialGrid = new Grid(3);
-        initialGrid.initializeGrid();
-        initialGrid.setGridValue(1, 1, true);
+        Set<Coordinate> coordinates = new HashSet<>();
+        coordinates.add(new Coordinate(2, 2));
+        Simulation simulation = new Simulation(3, coordinates);
+        Grid initialGrid = simulation.getCurrentGrid();
 
         // Act
-        Simulation simulation = new Simulation(initialGrid);
-        Grid nextGrid = simulation.nextGeneration();
+        Grid nextGrid = initialGrid.nextGeneration();
 
         // Assertion
         Grid expectedGrid = new Grid(3);
-        expectedGrid.initializeGrid();
 
         for(int i = 0; i < expectedGrid.getGridSize(); i++){
             for(int j = 0; j < expectedGrid.getGridSize(); j++){
@@ -129,24 +131,31 @@ public class SimulationTest {
     @Test
     void nextGeneration_shouldKillCell_whenLiveCellHasOverFourNeighbors(){
         // Arrange
-        Grid initialGrid = new Grid(3);
-        initialGrid.initializeGrid();
-        int[][] initialCoordinates = {{0, 1}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
-        initialGrid.setGridValues(initialCoordinates, true);
+        Set<Coordinate> coordinates = new HashSet<>();
+        int[][] initialCoordinates = {{1, 2}, {2, 1}, {2, 2}, {3, 2}, {2, 3}};
+
+        for(int[] offset : initialCoordinates)
+            coordinates.add(new Coordinate(offset[0], offset[1]));
+
+        Simulation simulation = new Simulation(3, coordinates);
+        Grid initialGrid = simulation.getCurrentGrid();
 
         // Act
-        Simulation simulation = new Simulation(initialGrid);
-        Grid nextGrid = simulation.nextGeneration();
+        Grid nextGrid = initialGrid.nextGeneration();
 
         // Assertion
-        Grid expectedGrid = new Grid(3);
-        expectedGrid.initializeGrid();
+        coordinates.clear();
         int[][] expectedCoordinates = {
-                {0, 0}, {0, 1}, {0, 2},
-                {1, 0}, {1, 2},
-                {2, 0}, {2, 1}, {2, 2},
+                {1, 1}, {1, 2}, {1, 3},
+                {2, 1}, {2, 3},
+                {3, 1}, {3, 2}, {3, 3},
         };
-        expectedGrid.setGridValues(expectedCoordinates, true);
+
+        for(int[] offset: expectedCoordinates)
+            coordinates.add(new Coordinate(offset[0], offset[1]));
+
+        Simulation expectedSimulation = new Simulation(3, coordinates);
+        Grid expectedGrid = expectedSimulation.getCurrentGrid();
 
         for(int i = 0; i < expectedGrid.getGridSize(); i++){
             for(int j = 0; j < expectedGrid.getGridSize(); j++){

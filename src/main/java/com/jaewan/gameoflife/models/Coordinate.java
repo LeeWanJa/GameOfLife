@@ -1,4 +1,4 @@
-package com.jaewan.gameoflife;
+package com.jaewan.gameoflife.models;
 
 import java.util.Objects;
 

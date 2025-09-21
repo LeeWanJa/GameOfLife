@@ -1,4 +1,4 @@
-package com.jaewan.gameoflife;
+package com.jaewan.gameoflife.models;
 
 public class Cell {
     private boolean status;

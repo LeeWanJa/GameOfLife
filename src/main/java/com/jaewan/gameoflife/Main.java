@@ -1,6 +1,6 @@
 package com.jaewan.gameoflife;
 
-import java.util.*;
+import com.jaewan.gameoflife.view.ConsolView;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,6 +1,10 @@
-package com.jaewan.gameoflife;
+package com.jaewan.gameoflife.view;
 
-import java.util.ArrayList;
+import com.jaewan.gameoflife.common.AnsiColors;
+import com.jaewan.gameoflife.models.Coordinate;
+import com.jaewan.gameoflife.models.Grid;
+import com.jaewan.gameoflife.service.Simulation;
+
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -8,14 +12,16 @@ import java.util.Set;
 // Main 함수에서 호출(책임 분리)
 // 사용자와의 소통 담당
 public class ConsolView {
-    void showChoices(){
+    // 사용자 선택
+    private void showChoices(){
         System.out.println("1. 게임 시작");
         System.out.println("2. 게임 규칙 설명");
         System.out.println("3. 나가기");
         System.out.print(">>> ");
     }
 
-    void showRules(){
+    // 인생게임 전체 룰
+    private void showRules(){
         System.out.println("https://codingdojo.org/kata/GameOfLife/");
         System.out.println(AnsiColors.RED + "<<카타의 인생게임>>" + AnsiColors.RESET);
         System.out.println(AnsiColors.RED + "[인생게임이란?]" + AnsiColors.RESET);
@@ -34,13 +40,15 @@ public class ConsolView {
 
     }
 
-    void showCoordinateInputRules(){
+    // 격자 입력 규칙
+    private void showCoordinateInputRules(){
         System.out.println("현재 표시된 좌표의 모든 세포는 죽어있는 상태입니다..\n좌표를 입력하여 살리고싶은 첫 세대의 세포들를 지정해주세요!");
         System.out.println("더 이상 입력을 원치 않으면 q 혹은 Q를 입력해주세요!");
         System.out.println("다음처럼 입력해주시면 됩니다 ==> x, y >>> 1 3");
     }
 
-    void printGrid(int size){
+    // 격자 변 크기 설정 후 좌표 선택 전 선택 가능한 좌표의 모음
+    private void printGridCoordinates(int size){
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
                 System.out.printf(" (%-2d, %2d) ", (j + 1), (i + 1));
@@ -50,12 +58,13 @@ public class ConsolView {
         }
     }
 
-    boolean isQ(String str){
+    // 좌표 선택 시 q 입력 확인
+    private boolean isQ(String str){
         return str.equals("q") || str.equals("Q");
     }
 
     // 좌표들을 입력 받고, 검증한 뒤, 좌표 리스트를 반환한다.
-    Set<Coordinate> inputCoordinates(int sideSize) throws NumberFormatException{
+    private Set<Coordinate> inputCoordinates(int sideSize) throws NumberFormatException{
         Set<Coordinate> coordinates = new HashSet<>();
         Scanner scan = new Scanner(System.in);
 
@@ -101,7 +110,8 @@ public class ConsolView {
         return coordinates;
     }
 
-    void startGame(int gridSideSize, Set<Coordinate> coordinates){
+    // 초기 세팅이 모두 끝난 뒤 Simulation, Grid 클래스와 상호작용하며 프로그램 시작
+    private void startGame(int gridSideSize, Set<Coordinate> coordinates){
         System.out.println("게임시작");
 
         Simulation simulation = new Simulation(gridSideSize, coordinates);
@@ -130,11 +140,13 @@ public class ConsolView {
         }
     }
 
-    boolean checkNumberRange(int row, int high, int target){
+    // 숫자 범위 확인
+    private boolean checkNumberRange(int row, int high, int target){
         return (row <= target) && (target <= high);
     }
 
-    void initialSetting(){
+    // 사용자 1번 선택 시 초기 격자 크기 세팅
+    private void initialSetting(){
         Scanner scan = new Scanner(System.in);
 
         System.out.print("한 변의 크기를 얼마로 하시겠습니까?(최대 15, 최소 3) >>> ");
@@ -148,7 +160,7 @@ public class ConsolView {
             }
 
             // 입력받은 변을 기반으로 격자의 좌표 출력
-            printGrid(side);
+            printGridCoordinates(side);
 
             // 좌표 입력 규칙
             showCoordinateInputRules();
