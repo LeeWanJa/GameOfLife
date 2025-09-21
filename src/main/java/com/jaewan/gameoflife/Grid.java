@@ -1,5 +1,8 @@
 package com.jaewan.gameoflife;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 // 셀 정보 저장 도메인 객체 Grid
 public class Grid {
     private final Cell[][] grid;
@@ -10,6 +13,7 @@ public class Grid {
 
     // 초기화 함수
     void initializeGrid(){
+        // 각 격자마다 Cell 객체 생성
         for(int i = 0; i < grid.length; i++){
             for(int j = 0; j < grid[0].length; j++){
                 grid[i][j] = new Cell();
@@ -17,14 +21,20 @@ public class Grid {
         }
     }
 
+    void applyCoordinates(Set<Coordinate> coordinates){
+        // coordinates를 하나씩 돌면서 좌표에 해당되는 Cell의 status를 true로 변경
+        for(Coordinate coordinate : coordinates)
+            grid[coordinate.getY() - 1][coordinate.getX() - 1].setCellIsAlive(true);
+    }
+
     // 요소 디버깅용
     void printGrid(){
         for(int i = 0; i < grid.length; i++){
             for(int j = 0; j < grid[i].length; j++){
                 if(grid[i][j].getCellIsAlive())
-                    System.out.print("T ");
+                    System.out.print("*  ");
                 else
-                    System.out.print("F ");
+                    System.out.print("-  ");
             }
 
             System.out.println();
@@ -88,5 +98,17 @@ public class Grid {
             else
                 return false;
         }
+    }
+
+    // 그리스 상태 점검
+    boolean isAllDead(){
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[i].length; j++){
+                if(grid[i][j].getCellIsAlive())
+                    return false;
+            }
+        }
+
+        return true;
     }
 }

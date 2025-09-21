@@ -101,6 +101,35 @@ public class ConsolView {
         return coordinates;
     }
 
+    void startGame(int gridSideSize, Set<Coordinate> coordinates){
+        System.out.println("게임시작");
+
+        Simulation simulation = new Simulation(gridSideSize, coordinates);
+
+        int count = 1;
+        while(true){
+            System.out.println("[세대 " + count++ + "]");
+
+            Grid grid = simulation.getCurrentGrid();
+
+            if(grid.isAllDead()){
+                System.out.println("모든 세포가 죽었습니다..\n");
+                break;
+            }
+
+            grid.printGrid();
+            System.out.println();
+
+            simulation.updateGrid();
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     boolean checkNumberRange(int row, int high, int target){
         return (row <= target) && (target <= high);
     }
@@ -127,9 +156,19 @@ public class ConsolView {
             // side를 기반으로 사용자에게 여러 좌표를 입력받고 HashSet<Coordinate> 반환
             Set<Coordinate> coordinates = inputCoordinates(side);
 
-            for(Coordinate coordinate : coordinates){
-                System.out.println(coordinate.getX() + " " + coordinate.getY());
-            }
+            System.out.println("입력된 좌표는 다음과 같습니다.");
+            for(Coordinate coordinate : coordinates)
+                System.out.print("(" + coordinate.getX() + ", " + coordinate.getY() + ") ");
+            System.out.print("\n시뮬레이션을 시작하시겠습니까?(y/n) >>> ");
+            String startGameInput = scan.nextLine().trim();
+
+            if(startGameInput.equals("y") || startGameInput.equals("Y")){
+                // Simulation에 인수 전달
+                System.out.println("인생게임을 시작하겠습니다!\n");
+
+                startGame(side, coordinates);
+            } else
+                System.out.println("시작화면으로 돌아가겠습니다.\n");
 
         } catch (NumberFormatException e) {
             System.out.println("숫자를 입력해주세요!\n");

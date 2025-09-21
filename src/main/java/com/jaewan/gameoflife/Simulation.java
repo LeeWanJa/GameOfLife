@@ -1,11 +1,19 @@
 package com.jaewan.gameoflife;
 
+import java.util.Set;
+
 public class Simulation {
     Grid grid;
 
-    public Simulation(int size) {
+    public Simulation(int size){
         this.grid = new Grid(size);
         this.grid.initializeGrid();
+    }
+
+    public Simulation(int size, Set<Coordinate> coordinates) {
+        this.grid = new Grid(size);
+        this.grid.initializeGrid(); // 모든 Cell의 상태 = false로 초기화
+        this.grid.applyCoordinates(coordinates); // 입력받은 coordinates를 기반으로 초기 true 값 설정
     }
 
     public Simulation(Grid grid) {
@@ -27,5 +35,13 @@ public class Simulation {
         }
 
         return nextGrid;
+    }
+
+    public Grid getCurrentGrid(){
+        return this.grid;
+    }
+
+    public void updateGrid(){
+        this.grid = nextGeneration();
     }
 }
